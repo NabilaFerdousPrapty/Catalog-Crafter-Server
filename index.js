@@ -79,3 +79,8 @@ app.get('/products', async (req, res) => {
   const products = await productsCollection.find({}).toArray();
   res.send(products);
 });
+app.get('/products/:id', async (req, res) => {
+  const product = await productsCollection.findOne({ _id: req.params.id });
+  res.send(product);
+}
+);
