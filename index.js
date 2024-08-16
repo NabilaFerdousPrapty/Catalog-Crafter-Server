@@ -98,7 +98,7 @@ app.get('/products', verifyToken, async (req, res) => {
   const query = {
     name: { $regex: search, $options: 'i' }, 
     ...(brand && { brand: { $regex: brand, $options: 'i' } }), 
-    ...(category && { category: { $regex: category, $options: 'i' } }),category
+    ...(category && { category: { $regex: category, $options: 'i' } }), 
     ...priceQuery 
   };
 
@@ -113,7 +113,7 @@ app.get('/products', verifyToken, async (req, res) => {
 
   const products = await productsCollection
     .find(query)
-    .sort(sortQuery) // Apply sorting
+    .sort(sortQuery)
     .skip((page - 1) * size)
     .limit(size)
     .toArray();
