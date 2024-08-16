@@ -7,6 +7,9 @@ const jwt = require('jsonwebtoken');
 app.use(cors({
   origin: ["http://localhost:5173",
     "http://localhost:5174",
+    "https://catalog-crafter.web.app",
+    "https://catalog-crafter.firebaseapp.com"
+    
     
 
 
@@ -52,7 +55,7 @@ async function run() {
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
     
-    console.log("Pinged your deployment. You successfully connected to MongoDB!");
+    // console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
     // Ensures that the client will close when you finish/error
     // await client.close();
@@ -78,7 +81,7 @@ app.post('/jwt', async (req, res) => {
 app.get('/products', async (req, res) => {
   const page = parseInt(req.query.page);
     const size = parseInt(req.query.limit);
-    console.log(page, size);
+    // console.log(page, size);
     
     const products = await productsCollection.find().skip((page - 1) * size).limit(size).toArray();
   res.send(products);
