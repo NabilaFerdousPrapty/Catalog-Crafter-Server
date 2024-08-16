@@ -85,6 +85,8 @@ app.get('/products', verifyToken, async (req, res) => {
   const brand = req.query.brand || "";
   const category = req.query.category || "";
   const priceRange = req.query.priceRange || "";
+  const priceSort = req.query.priceSort || "";
+  const dateSort = req.query.dateSort || "";
 
   // Parsing the price range
   let priceQuery = {};
@@ -100,16 +102,25 @@ app.get('/products', verifyToken, async (req, res) => {
     ...priceQuery // Include price range filter
   };
 
-  // console.log(query);
+  // Sorting logic
+  let sortQuery = {};
+  if (priceSort) {
+    sortQuery.price = priceSort === 'High to Low' ? -1 : 1;
+  }
+  if (dateSort) {
+    sortQuery.createdAt = dateSort === 'Newest First' ? -1 : 1;
+  }
 
   const products = await productsCollection
     .find(query)
+    .sort(sortQuery) // Apply sorting
     .skip((page - 1) * size)
     .limit(size)
     .toArray();
 
   res.send(products);
 });
+
 
 
 app.get('/productsCount', async (req, res) => {
