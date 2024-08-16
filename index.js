@@ -78,12 +78,16 @@ app.post('/jwt', async (req, res) => {
   res.send({ token });
 
 })
-app.get('/products', async (req, res) => {
+app.get('/products',verifyToken, async (req, res) => {
   const page = parseInt(req.query.page);
     const size = parseInt(req.query.limit);
-    // console.log(page, size);
+    const search= req.query.search;
+    const query={
+      name:{$regex:search,$options:'i'}
+    }
+    const products = await productsCollection.find(query).skip((page - 1) * size).limit(size).toArray();
     
-    const products = await productsCollection.find().skip((page - 1) * size).limit(size).toArray();
+   
   res.send(products);
 });
 app.get('/productsCount', async (req, res) => {
