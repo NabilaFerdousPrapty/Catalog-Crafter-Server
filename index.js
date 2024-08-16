@@ -76,9 +76,23 @@ app.post('/jwt', async (req, res) => {
 
 })
 app.get('/products', async (req, res) => {
-  const products = await productsCollection.find({}).toArray();
+  const page = parseInt(req.query.page);
+    const size = parseInt(req.query.limit);
+    console.log(page, size);
+    
+    const products = await productsCollection.find().skip((page - 1) * size).limit(size).toArray();
   res.send(products);
 });
+app.get('/productsCount', async (req, res) => {
+  try {
+      const count = await productsCollection.estimatedDocumentCount();
+      res.send({ count });
+  } catch (err) {
+      console.error('Error fetching product count:', err);
+      res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
 app.get('/products/:id', async (req, res) => {
   const product = await productsCollection.findOne({ _id: req.params.id });
   res.send(product);
