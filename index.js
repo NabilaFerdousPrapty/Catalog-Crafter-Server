@@ -96,10 +96,10 @@ app.get('/products', verifyToken, async (req, res) => {
   }
 
   const query = {
-    name: { $regex: search, $options: 'i' }, // Case-insensitive search on name
-    ...(brand && { brand: { $regex: brand, $options: 'i' } }), // Case-insensitive search on brand
-    ...(category && { category: { $regex: category, $options: 'i' } }), // Case-insensitive search on category
-    ...priceQuery // Include price range filter
+    name: { $regex: search, $options: 'i' }, 
+    ...(brand && { brand: { $regex: brand, $options: 'i' } }), 
+    ...(category && { category: { $regex: category, $options: 'i' } }),category
+    ...priceQuery 
   };
 
   // Sorting logic
