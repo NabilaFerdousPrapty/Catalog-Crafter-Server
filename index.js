@@ -78,18 +78,40 @@ app.post('/jwt', async (req, res) => {
   res.send({ token });
 
 })
-app.get('/products',verifyToken, async (req, res) => {
+app.get('/products', verifyToken, async (req, res) => {
   const page = parseInt(req.query.page);
-    const size = parseInt(req.query.limit);
-    const search= req.query.search;
-    const query={
-      name:{$regex:search,$options:'i'}
-    }
-    const products = await productsCollection.find(query).skip((page - 1) * size).limit(size).toArray();
-    
-   
+  const size = parseInt(req.query.limit);
+  const search = req.query.search || "";
+  const brand = req.query.brand || "";
+  const category = req.query.category || "";
+  const priceRange = req.query.priceRange || "";
+
+  // Parsing the price range
+  let priceQuery = {};
+  if (priceRange) {
+    const [minPrice, maxPrice] = priceRange.split('-').map(Number);
+    priceQuery = { price: { $gte: minPrice, $lte: maxPrice } };
+  }
+
+  const query = {
+    name: { $regex: search, $options: 'i' }, // Case-insensitive search on name
+    ...(brand && { brand: { $regex: brand, $options: 'i' } }), // Case-insensitive search on brand
+    ...(category && { category: { $regex: category, $options: 'i' } }), // Case-insensitive search on category
+    ...priceQuery // Include price range filter
+  };
+
+  // console.log(query);
+
+  const products = await productsCollection
+    .find(query)
+    .skip((page - 1) * size)
+    .limit(size)
+    .toArray();
+
   res.send(products);
 });
+
+
 app.get('/productsCount', async (req, res) => {
   try {
       const count = await productsCollection.estimatedDocumentCount();
