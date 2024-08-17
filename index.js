@@ -109,8 +109,10 @@ app.get('/products', verifyToken, async (req, res) => {
   }
   
   if (dateSort) {
-    sortQuery.createdAt = dateSort === 'newestFirst' ? -1 : 1;
+    sortQuery.createdAtDate = dateSort === 'newestFirst' ? -1 : 1;
+    sortQuery.createdAtTime = dateSort === 'newestFirst' ? -1 : 1;
   }
+  
 
   const products = await productsCollection
     .find(query)
