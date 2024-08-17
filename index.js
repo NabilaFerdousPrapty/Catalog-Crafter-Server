@@ -105,10 +105,11 @@ app.get('/products', verifyToken, async (req, res) => {
   // Sorting logic
   let sortQuery = {};
   if (priceSort) {
-    sortQuery.price = priceSort === 'High to Low' ? -1 : 1;
+    sortQuery.price = priceSort === 'highToLow' ? -1 : 1;
   }
+  
   if (dateSort) {
-    sortQuery.createdAt = dateSort === 'Newest First' ? -1 : 1;
+    sortQuery.createdAt = dateSort === 'newestFirst' ? -1 : 1;
   }
 
   const products = await productsCollection
